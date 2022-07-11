@@ -1,9 +1,13 @@
-.loading {
+.loading, .error {
     height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+
+    h2{
+        font-size: 2rem;
+    }
 }
 
 .container {
@@ -39,6 +43,8 @@
                 border: none;
                 border-radius: 10px;
                 background-color: var(--clr-primary-dark);
+
+                cursor: pointer;
                 color: white;
             }
         }

@@ -6,29 +6,43 @@ const API_URL = "https://randomuser.me/api?seed=hydra";
 
 const Container = () => {
   const [users, setUsers] = useState([]);
+  const [userNumber, setUserNumber] = useState(10);
+
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const fetchUsers = async (number) => {
-    setIsLoading(true);
     try {
       const resp = await fetch(API_URL + "&results=" + number);
       const jsonResp = await resp.json();
 
       setIsLoading(false);
       setUsers(jsonResp.results);
-      console.log(jsonResp.results);
     } catch (error) {
       setIsLoading(false);
-      console.log(error);
+      setError(true);
     }
   };
 
   useEffect(() => {
-    fetchUsers(10);
-  }, []);
+    fetchUsers(userNumber);
+  }, [userNumber]);
 
   if (isLoading) {
-    return <h2 className="loading">loading...</h2>;
+    return (
+      <div className="loading">
+        <h2>loading...</h2>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error">
+        <h2>error getting users</h2>
+        <p>try refreshing page...</p>
+      </div>
+    );
   }
 
   return (
@@ -41,7 +55,11 @@ const Container = () => {
           })}
         </div>
         <div className="btn">
-          <button type="button" className="load-more-btn">
+          <button
+            type="button"
+            className="load-more-btn"
+            onClick={() => setUserNumber(userNumber + 10)}
+          >
             Load more
           </button>
         </div>
