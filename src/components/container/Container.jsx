@@ -24,7 +24,7 @@ const Container = () => {
   };
 
   useEffect(() => {
-    fetchUsers(20);
+    fetchUsers(10);
   }, []);
 
   if (isLoading) {
