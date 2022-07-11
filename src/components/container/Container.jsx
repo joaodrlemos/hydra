@@ -6,6 +6,7 @@ const API_URL = "https://randomuser.me/api?seed=hydra";
 
 const Container = () => {
   const [users, setUsers] = useState([]);
+  const [favoritedUsers, setFavoritedUsers] = useState([]);
   const [userNumber, setUserNumber] = useState(10);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -13,14 +14,48 @@ const Container = () => {
 
   const fetchUsers = async (number) => {
     try {
+      let userIndex = 1;
       const resp = await fetch(API_URL + "&results=" + number);
       const jsonResp = await resp.json();
 
+      const userList = jsonResp.results.map((user) => {
+        return { ...user, index: userIndex++, favorite: false };
+      });
+
       setIsLoading(false);
-      setUsers(jsonResp.results);
+      setUsers(userList);
     } catch (error) {
       setIsLoading(false);
       setError(true);
+    }
+  };
+
+  const toggleFavorite = (id, favorite) => {
+    let favoritedUser = {};
+    if (favorite) {
+      const newUsers = favoritedUsers.filter((user) => {
+        if (user.login.uuid === id) {
+          favoritedUser = { ...user, favorite: !user.favorite };
+          users.splice(
+            favoritedUser.index - favoritedUsers.length,
+            0,
+            favoritedUser
+          );
+        } else {
+          return user;
+        }
+      });
+      setFavoritedUsers(newUsers);
+    } else {
+      const newUsers = users.filter((user) => {
+        if (user.login.uuid === id) {
+          favoritedUser = { ...user, favorite: !user.favorite };
+          setFavoritedUsers([...favoritedUsers, favoritedUser]);
+        } else {
+          return user;
+        }
+      });
+      setUsers(newUsers);
     }
   };
 
@@ -50,8 +85,23 @@ const Container = () => {
       <h2 className="container-title">users</h2>
       <div className="container-area">
         <div className="user-list">
+          {favoritedUsers.map((user) => {
+            return (
+              <User
+                key={user.index}
+                user={user}
+                toggleFavorite={toggleFavorite}
+              />
+            );
+          })}
           {users.map((user) => {
-            return <User key={user.login.uuid} user={user} />;
+            return (
+              <User
+                key={user.login.uuid}
+                user={user}
+                toggleFavorite={toggleFavorite}
+              />
+            );
           })}
         </div>
         <div className="btn">

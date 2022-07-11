@@ -1,12 +1,14 @@
 import "./user.scss";
-import { BsStar } from "react-icons/bs";
+import { BsStar, BsStarFill } from "react-icons/bs";
 
-const User = ({ user }) => {
+const User = ({ user, toggleFavorite }) => {
   const {
+    login: { uuid },
     gender,
     name: { first },
     name: { last },
     picture: { large },
+    favorite,
   } = user;
 
   return (
@@ -19,7 +21,17 @@ const User = ({ user }) => {
         <p className="gender">{gender}</p>
       </div>
       <div className="user-favorite">
-        <BsStar />
+        {favorite ? (
+          <BsStarFill
+            className="user-favorite-icon"
+            onClick={() => toggleFavorite(uuid, favorite)}
+          />
+        ) : (
+          <BsStar
+            className="user-favorite-icon"
+            onClick={() => toggleFavorite(uuid, favorite)}
+          />
+        )}
       </div>
     </article>
   );
