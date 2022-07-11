@@ -1,0 +1,25 @@
+@import "./global.scss";
+
+/*
+=============== 
+Global Styles
+===============
+*/
+
+*,
+::after,
+::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    background: var(--clr-primary-light);
+    color: var(--clr-primary-dark);
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}

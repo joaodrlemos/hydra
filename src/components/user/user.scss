@@ -1,0 +1,41 @@
+.user {
+    -webkit-box-shadow: 3px 3px 2px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 3px 3px 2px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 3px 3px 2px 0px rgba(0, 0, 0, 0.75);
+    padding: 5px;
+    margin: 5px 0px;
+
+    display: flex;
+    border-radius: 10px;
+    background: var(--clr-primary);
+
+    img {
+        flex: 1;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .user-info {
+        flex: 6;
+        margin: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .gender {
+            font-style: italic;
+        }
+    }
+
+    .user-favorite {
+        flex: 1;
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: yellow;
+    }
+}
