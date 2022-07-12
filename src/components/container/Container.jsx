@@ -9,7 +9,14 @@ const API_URL = "https://randomuser.me/api?seed=hydra";
 const Container = () => {
   // User Lists and selects
   const [users, setUsers] = useState([]);
-  const [favoritedUsers, setFavoritedUsers] = useState([]);
+  const [favoritedUsers, setFavoritedUsers] = useState(() => {
+    const cache = localStorage.getItem("favoritedUsers");
+
+    if (cache) {
+      return JSON.parse(cache);
+    }
+    return [];
+  });
   const [userQuantity, setUserQuantity] = useState(10);
   const [selectedUser, setSelectedUser] = useState({});
 
@@ -74,8 +81,14 @@ const Container = () => {
       });
       setUsers(newUsers);
     }
-    console.log(favoritedUsers);
-    localStorage.setItem("favoritedUsers", JSON.stringify(favoritedUsers));
+  };
+
+  const saveToLocalStorage = () => {
+    if (favoritedUsers.length === 0) {
+      localStorage.removeItem("favoritedUsers");
+    } else {
+      localStorage.setItem("favoritedUsers", JSON.stringify(favoritedUsers));
+    }
   };
 
   const filterByGender = (gender) => {
@@ -94,6 +107,8 @@ const Container = () => {
     setFavoriteUsersFilteredByGender(favoriteUsersFiltByGender);
   };
 
+  const filterByName = () => {};
+
   const openModal = (user) => {
     setShowModal(true);
     setSelectedUser(user);
@@ -102,6 +117,10 @@ const Container = () => {
   const closeModal = () => {
     setShowModal(false);
   };
+
+  useEffect(() => {
+    saveToLocalStorage();
+  }, [toggleFavorite]);
 
   useEffect(() => {
     filterByGender(genderOption);
