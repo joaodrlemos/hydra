@@ -16,10 +16,12 @@ const Container = () => {
     }
     return [];
   });
-  const [userQuantity, setUserQuantity] = useState(10);
-  const [selectedUser, setSelectedUser] = useState({});
+  const [usersFiltered, setUsersFiltered] = useState([]);
+  const [favoriteUsersFiltered, setFavoriteUsersFiltered] = useState([]);
 
   //aditional values
+  const [userQuantity, setUserQuantity] = useState(10);
+  const [selectedUser, setSelectedUser] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -28,8 +30,6 @@ const Container = () => {
   const [filterByFavorite, setFilterByFavorite] = useState(false);
   const [genderOption, setGenderOption] = useState("all");
   const [searchedName, setSearchedName] = useState("");
-  const [usersFiltered, setUsersFiltered] = useState([]);
-  const [favoriteUsersFiltered, setFavoriteUsersFiltered] = useState([]);
 
   const fetchUsers = async () => {
     try {
@@ -123,12 +123,31 @@ const Container = () => {
   };
 
   const openModal = (user) => {
-    setShowModal(true);
     setSelectedUser(user);
+    setShowModal(true);
   };
 
   const closeModal = () => {
     setShowModal(false);
+  };
+
+  const validateData = () => {
+    return (
+      // validates if both arrays are empty
+      (favoritedUsers.length === 0 && users.length === 0) ||
+      // validates if is filteredByFavorite but favoriteArray is empty
+      (favoritedUsers.length === 0 && filterByFavorite) ||
+      // validates if there is a filter for gender and favorite with no name in favorite array
+      (genderOption !== "all" &&
+        filterByFavorite &&
+        favoriteUsersFiltered.filter((user) => user.gender === genderOption)
+          .length === 0) ||
+      // validates if a name was searched while arrays are empty
+      (searchedName &&
+        favoriteUsersFiltered.length === 0 &&
+        filterByFavorite) ||
+      (searchedName && usersFiltered.length === 0 && !filterByFavorite)
+    );
   };
 
   useEffect(() => {
@@ -179,74 +198,56 @@ const Container = () => {
             setFilterByFavorite={setFilterByFavorite}
             setSearchedName={setSearchedName}
           />
-          {
-            // validates if both arrays are empty
-            (favoritedUsers.length === 0 && users.length === 0) ||
-            // validates if is filteredByFavorite but favoriteArray is empty
-            (favoritedUsers.length === 0 && filterByFavorite) ||
-            // validates if there is a filter for gender and favorite with no name in favorite array
-            (genderOption !== "all" &&
-              filterByFavorite &&
-              favoriteUsersFiltered.filter(
-                (user) => user.gender === genderOption
-              ).length === 0) ||
-            // validates if a name was searched while arrays are empty
-            (searchedName &&
-              favoriteUsersFiltered.length === 0 &&
-              filterByFavorite) ||
-            (searchedName &&
-              usersFiltered.length === 0 &&
-              !filterByFavorite) ? (
-              <div className="no-data">
-                <h2>No users found</h2>
-              </div>
-            ) : (
-              <>
-                {genderOption === "all" && !searchedName ? (
-                  <div className="user-list">
+          {validateData() ? (
+            <div className="no-data">
+              <h2>No users found</h2>
+            </div>
+          ) : (
+            <>
+              {genderOption === "all" && !searchedName ? (
+                <div className="user-list">
+                  <UserList
+                    users={favoritedUsers}
+                    toggleFavorite={toggleFavorite}
+                    openModal={openModal}
+                  />
+                  {!filterByFavorite && (
                     <UserList
-                      users={favoritedUsers}
+                      users={users}
                       toggleFavorite={toggleFavorite}
                       openModal={openModal}
                     />
-                    {!filterByFavorite && (
-                      <UserList
-                        users={users}
-                        toggleFavorite={toggleFavorite}
-                        openModal={openModal}
-                      />
-                    )}
-                  </div>
-                ) : (
-                  <div className="user-list">
+                  )}
+                </div>
+              ) : (
+                <div className="user-list">
+                  <UserList
+                    users={favoriteUsersFiltered}
+                    toggleFavorite={toggleFavorite}
+                    openModal={openModal}
+                  />
+                  {!filterByFavorite && (
                     <UserList
-                      users={favoriteUsersFiltered}
+                      users={usersFiltered}
                       toggleFavorite={toggleFavorite}
                       openModal={openModal}
                     />
-                    {!filterByFavorite && (
-                      <UserList
-                        users={usersFiltered}
-                        toggleFavorite={toggleFavorite}
-                        openModal={openModal}
-                      />
-                    )}
-                  </div>
-                )}
-                {!filterByFavorite && !searchedName && (
-                  <div className="btn">
-                    <button
-                      type="button"
-                      className="load-more-btn"
-                      onClick={() => setUserQuantity(userQuantity + 10)}
-                    >
-                      Load more
-                    </button>
-                  </div>
-                )}
-              </>
-            )
-          }
+                  )}
+                </div>
+              )}
+              {!filterByFavorite && !searchedName && (
+                <div className="btn">
+                  <button
+                    type="button"
+                    className="load-more-btn"
+                    onClick={() => setUserQuantity(userQuantity + 10)}
+                  >
+                    Load more
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </section>
     </>
