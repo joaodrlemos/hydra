@@ -142,11 +142,17 @@ const Container = () => {
         filterByFavorite &&
         favoriteUsersFiltered.filter((user) => user.gender === genderOption)
           .length === 0) ||
-      // validates if a name was searched while arrays are empty
+      // validates if a name was searched with favorite while favoriteArray is empty
       (searchedName &&
-        favoriteUsersFiltered.length === 0 &&
-        filterByFavorite) ||
-      (searchedName && usersFiltered.length === 0 && !filterByFavorite)
+        filterByFavorite &&
+        favoriteUsersFiltered.length === 0) ||
+      // validates if a name was searched with specific gender arrays are empty
+      (searchedName &&
+        genderOption !== "all" &&
+        usersFiltered.filter((user) => user.gender === genderOption).length ===
+          0 &&
+        favoriteUsersFiltered.filter((user) => user.gender === genderOption)
+          .length === 0)
     );
   };
 
@@ -204,37 +210,20 @@ const Container = () => {
             </div>
           ) : (
             <>
-              {genderOption === "all" && !searchedName ? (
-                <div className="user-list">
+              <div className="user-list">
+                <UserList
+                  users={favoriteUsersFiltered}
+                  toggleFavorite={toggleFavorite}
+                  openModal={openModal}
+                />
+                {!filterByFavorite && (
                   <UserList
-                    users={favoritedUsers}
+                    users={usersFiltered}
                     toggleFavorite={toggleFavorite}
                     openModal={openModal}
                   />
-                  {!filterByFavorite && (
-                    <UserList
-                      users={users}
-                      toggleFavorite={toggleFavorite}
-                      openModal={openModal}
-                    />
-                  )}
-                </div>
-              ) : (
-                <div className="user-list">
-                  <UserList
-                    users={favoriteUsersFiltered}
-                    toggleFavorite={toggleFavorite}
-                    openModal={openModal}
-                  />
-                  {!filterByFavorite && (
-                    <UserList
-                      users={usersFiltered}
-                      toggleFavorite={toggleFavorite}
-                      openModal={openModal}
-                    />
-                  )}
-                </div>
-              )}
+                )}
+              </div>
               {!filterByFavorite && !searchedName && (
                 <div className="btn">
                   <button
