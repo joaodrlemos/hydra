@@ -12,38 +12,12 @@ What the app does:
 - Able to click on a specific user to see their picture zoomed in.
 - Able to favorite different users, saving them locally.
 
+<img src='https://i.postimg.cc/mDnYgBxR/Hydra-preview.png' alt='Hydra-preview' width="550"/>
+
 ## Technologies used
 
 - HTML, CSS, JS
 - React, Sass
-
-## The challenge requirements
-
-● List all users
-○ Fetch only the first 10 users
-○ Each user should have the following properties
-■ First Name
-■ Last Name
-■ Gender
-■ Photo
-○ Create a button named “Load More” that every time it is pressed fetches an
-additional 10 users
-■ You should be able to scroll through the users
-■ All previous users should still be visible
-○ For each user we should be able to favorite that user
-■ All favorite users should show first in the list of users
-● Modal
-○ Create a modal to display a bigger version of the photo when we click on a user
-■ We should also be able to favorite a user in this modal
-● Filter
-○ Create a filter that allows filtering by:
-■ Gender
-■ Favorite
-○ List should display a message if there are no users to show
-● Bonus
-○ Saving favorite users after reload
-○ Proper use of reusable components
-○ Search by user’s name (first or last)
 
 ## Setting up the app
 
