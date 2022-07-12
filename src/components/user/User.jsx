@@ -1,7 +1,7 @@
 import "./user.scss";
 import { BsStar, BsStarFill } from "react-icons/bs";
 
-const User = ({ user, toggleFavorite }) => {
+const User = ({ user, toggleFavorite, openModal }) => {
   const {
     login: { uuid },
     gender,
@@ -13,8 +13,12 @@ const User = ({ user, toggleFavorite }) => {
 
   return (
     <article className="user">
-      <img src={large} alt="photo" />
-      <div className="user-info">
+      <img
+        src={large}
+        alt={`${first} ${last}`}
+        onClick={() => openModal(user)}
+      />
+      <div className="user-info" onClick={() => openModal(user)}>
         <h3 className="name">
           {first} {last}
         </h3>

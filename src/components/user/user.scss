@@ -6,24 +6,24 @@
     margin: 5px 0px;
 
     display: flex;
+    align-items: center;
     border-radius: 10px;
     background: var(--clr-primary);
 
     img {
         flex: 1;
-        height: 80px;
+        height: 60px;
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        cursor: pointer;
     }
 
     .user-info {
         flex: 6;
-        margin: 15px;
+        margin: 15px 5px;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        cursor: pointer;
 
         .gender {
             font-style: italic;
