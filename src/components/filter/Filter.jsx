@@ -6,11 +6,19 @@ const Filter = ({
   setGenderOption,
   filterByFavorite,
   setFilterByFavorite,
+  setSearchedName,
 }) => {
   return (
     <div className="actions">
       <div className="search-bar">
-        <input type="text" placeholder="search" className="search-input" />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            setSearchedName(e.target.children[0].value);
+          }}
+        >
+          <input type="text" placeholder="search" className="search-input" />
+        </form>
       </div>
       <div className="filters">
         <span className="filter-by">Filter by:</span>
