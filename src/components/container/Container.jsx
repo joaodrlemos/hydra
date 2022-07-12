@@ -33,11 +33,10 @@ const Container = () => {
 
   const fetchUsers = async () => {
     try {
-      let userList = [];
       const resp = await fetch(API_URL + "&results=" + userQuantity);
       const jsonResp = await resp.json();
 
-      userList = jsonResp.results.filter((user) => {
+      const userList = jsonResp.results.filter((user) => {
         if (
           !favoritedUsers.find(
             (favoriteUser) => favoriteUser.login.uuid === user.login.uuid
@@ -134,7 +133,7 @@ const Container = () => {
   const validateData = () => {
     return (
       // validates if both arrays are empty
-      (favoritedUsers.length === 0 && users.length === 0) ||
+      (favoriteUsersFiltered.length === 0 && usersFiltered.length === 0) ||
       // validates if is filteredByFavorite but favoriteArray is empty
       (favoritedUsers.length === 0 && filterByFavorite) ||
       // validates if there is a filter for gender and favorite with no name in favorite array
