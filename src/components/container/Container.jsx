@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import "./container.scss";
 import Modal from "../modal/Modal";
-import { BsStar, BsStarFill } from "react-icons/bs";
 import UserList from "../user/UserList";
+import Filter from "../filter/Filter";
 
 const API_URL = "https://randomuser.me/api?seed=hydra";
 
@@ -27,10 +27,11 @@ const Container = () => {
 
   const fetchUsers = async () => {
     try {
+      let userList = [];
       const resp = await fetch(API_URL + "&results=" + userQuantity);
       const jsonResp = await resp.json();
 
-      const userList = jsonResp.results.filter((user) => {
+      userList = jsonResp.results.filter((user) => {
         if (
           !favoritedUsers.find(
             (favoriteUser) => favoriteUser.login.uuid === user.login.uuid
@@ -41,7 +42,6 @@ const Container = () => {
           return false;
         }
       });
-
       setIsLoading(false);
       setUsers(userList);
     } catch (error) {
@@ -74,10 +74,11 @@ const Container = () => {
       });
       setUsers(newUsers);
     }
+    console.log(favoritedUsers);
+    localStorage.setItem("favoritedUsers", JSON.stringify(favoritedUsers));
   };
 
   const filterByGender = (gender) => {
-    console.log(gender);
     setGenderOption(gender);
     let usersFiltByGender = [];
     let favoriteUsersFiltByGender = [];
@@ -104,7 +105,7 @@ const Container = () => {
 
   useEffect(() => {
     filterByGender(genderOption);
-  }, [users, favoritedUsers, genderOption]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [users, genderOption]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     fetchUsers();
@@ -139,48 +140,19 @@ const Container = () => {
       <section className="container">
         <h2 className="container-title">users</h2>
         <div className="container-area">
-          <div className="actions">
-            <div className="search-bar">
-              <input
-                type="text"
-                placeholder="search"
-                className="search-input"
-              />
-            </div>
-            <div className="filters">
-              <span className="filter-by">Filter by:</span>
-              <select
-                value={genderOption}
-                name="gender"
-                id="gender"
-                className="filter-input"
-                onChange={(e) => setGenderOption(e.target.value)}
-              >
-                <option value="all" name="all">
-                  all
-                </option>
-                <option value="male" name="male">
-                  male
-                </option>
-                <option value="female" name="female">
-                  female
-                </option>
-              </select>
-              <div className="filter-favorite">
-                {filterByFavorite ? (
-                  <BsStarFill
-                    onClick={() => setFilterByFavorite(!filterByFavorite)}
-                  />
-                ) : (
-                  <BsStar
-                    onClick={() => setFilterByFavorite(!filterByFavorite)}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
+          <Filter
+            genderOption={genderOption}
+            setGenderOption={setGenderOption}
+            filterByFavorite={filterByFavorite}
+            setFilterByFavorite={setFilterByFavorite}
+          />
           {(favoritedUsers.length === 0 && users.length === 0) ||
-          (favoritedUsers.length === 0 && filterByFavorite) ? (
+          (favoritedUsers.length === 0 && filterByFavorite) ||
+          (genderOption !== "all" &&
+            filterByFavorite &&
+            favoriteUsersFilteredByGender.filter(
+              (user) => user.gender === genderOption
+            ).length === 0) ? (
             <div className="no-data">
               <h2>No users found</h2>
             </div>
@@ -217,15 +189,17 @@ const Container = () => {
                   )}
                 </div>
               )}
-              <div className="btn">
-                <button
-                  type="button"
-                  className="load-more-btn"
-                  onClick={() => setUserQuantity(userQuantity + 10)}
-                >
-                  Load more
-                </button>
-              </div>
+              {!filterByFavorite && (
+                <div className="btn">
+                  <button
+                    type="button"
+                    className="load-more-btn"
+                    onClick={() => setUserQuantity(userQuantity + 10)}
+                  >
+                    Load more
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>
