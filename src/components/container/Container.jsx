@@ -19,17 +19,19 @@ const Container = () => {
   const [usersFiltered, setUsersFiltered] = useState([]);
   const [favoriteUsersFiltered, setFavoriteUsersFiltered] = useState([]);
 
+  // Filters
+  const [filterOptions, setFilterOptions] = useState({
+    filterByFavorite: false,
+    genderOption: "all",
+    searchedName: "",
+  });
+
   //aditional values
   const [userQuantity, setUserQuantity] = useState(10);
   const [selectedUser, setSelectedUser] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
-
-  // Filters
-  const [filterByFavorite, setFilterByFavorite] = useState(false);
-  const [genderOption, setGenderOption] = useState("all");
-  const [searchedName, setSearchedName] = useState("");
 
   const fetchUsers = async () => {
     try {
@@ -93,18 +95,20 @@ const Container = () => {
     let usersFilt = [];
     let favoriteUsersFilt = [];
 
-    if (genderOption !== "all") {
-      usersFilt = users.filter((user) => user.gender === genderOption);
+    if (filterOptions.genderOption !== "all") {
+      usersFilt = users.filter(
+        (user) => user.gender === filterOptions.genderOption
+      );
       favoriteUsersFilt = favoritedUsers.filter(
-        (user) => user.gender === genderOption
+        (user) => user.gender === filterOptions.genderOption
       );
     } else {
       usersFilt = users;
       favoriteUsersFilt = favoritedUsers;
     }
 
-    if (searchedName) {
-      const nameUpcased = searchedName.toUpperCase();
+    if (filterOptions.searchedName) {
+      const nameUpcased = filterOptions.searchedName.toUpperCase();
       usersFilt = usersFilt.filter(
         (user) =>
           user.name.first.toUpperCase() === nameUpcased ||
@@ -135,23 +139,26 @@ const Container = () => {
       // validates if both arrays are empty
       (favoriteUsersFiltered.length === 0 && usersFiltered.length === 0) ||
       // validates if is filteredByFavorite but favoriteArray is empty
-      (favoritedUsers.length === 0 && filterByFavorite) ||
+      (favoritedUsers.length === 0 && filterOptions.filterByFavorite) ||
       // validates if there is a filter for gender and favorite with no name in favorite array
-      (genderOption !== "all" &&
-        filterByFavorite &&
-        favoriteUsersFiltered.filter((user) => user.gender === genderOption)
-          .length === 0) ||
+      (filterOptions.genderOption !== "all" &&
+        filterOptions.filterByFavorite &&
+        favoriteUsersFiltered.filter(
+          (user) => user.gender === filterOptions.genderOption
+        ).length === 0) ||
       // validates if a name was searched with favorite while favoriteArray is empty
-      (searchedName &&
-        filterByFavorite &&
+      (filterOptions.searchedName &&
+        filterOptions.filterByFavorite &&
         favoriteUsersFiltered.length === 0) ||
-      // validates if a name was searched with specific gender arrays are empty
-      (searchedName &&
-        genderOption !== "all" &&
-        usersFiltered.filter((user) => user.gender === genderOption).length ===
-          0 &&
-        favoriteUsersFiltered.filter((user) => user.gender === genderOption)
-          .length === 0)
+      // validates if a name was searched with specific gender and arrays are empty
+      (filterOptions.searchedName &&
+        filterOptions.genderOption !== "all" &&
+        usersFiltered.filter(
+          (user) => user.gender === filterOptions.genderOption
+        ).length === 0 &&
+        favoriteUsersFiltered.filter(
+          (user) => user.gender === filterOptions.genderOption
+        ).length === 0)
     );
   };
 
@@ -161,7 +168,7 @@ const Container = () => {
 
   useEffect(() => {
     filterUsers();
-  }, [users, genderOption, searchedName]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [users, filterOptions.genderOption, filterOptions.searchedName]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     fetchUsers();
@@ -197,11 +204,8 @@ const Container = () => {
         <h2 className="container-title">users</h2>
         <div className="container-area">
           <Filter
-            genderOption={genderOption}
-            setGenderOption={setGenderOption}
-            filterByFavorite={filterByFavorite}
-            setFilterByFavorite={setFilterByFavorite}
-            setSearchedName={setSearchedName}
+            filterOptions={filterOptions}
+            setFilterOptions={setFilterOptions}
           />
           {validateData() ? (
             <div className="no-data">
@@ -215,7 +219,7 @@ const Container = () => {
                   toggleFavorite={toggleFavorite}
                   openModal={openModal}
                 />
-                {!filterByFavorite && (
+                {!filterOptions.filterByFavorite && (
                   <UserList
                     users={usersFiltered}
                     toggleFavorite={toggleFavorite}
@@ -223,7 +227,7 @@ const Container = () => {
                   />
                 )}
               </div>
-              {!filterByFavorite && !searchedName && (
+              {!filterOptions.filterByFavorite && !filterOptions.searchedName && (
                 <div className="btn">
                   <button
                     type="button"

@@ -1,20 +1,17 @@
 import "./filter.scss";
 import { BsStar, BsStarFill } from "react-icons/bs";
 
-const Filter = ({
-  genderOption,
-  setGenderOption,
-  filterByFavorite,
-  setFilterByFavorite,
-  setSearchedName,
-}) => {
+const Filter = ({ filterOptions, setFilterOptions }) => {
   return (
     <div className="actions">
       <div className="search-bar">
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            setSearchedName(e.target.children[0].value);
+            setFilterOptions((p) => ({
+              ...p,
+              searchedName: e.target.children[0].value,
+            }));
           }}
         >
           <input type="text" placeholder="search" className="search-input" />
@@ -23,11 +20,13 @@ const Filter = ({
       <div className="filters">
         <span className="filter-by">Filter by:</span>
         <select
-          value={genderOption}
+          value={filterOptions.genderOption}
           name="gender"
           id="gender"
           className="filter-input"
-          onChange={(e) => setGenderOption(e.target.value)}
+          onChange={(e) =>
+            setFilterOptions((p) => ({ ...p, genderOption: e.target.value }))
+          }
         >
           <option value="all" name="all">
             all
@@ -40,12 +39,24 @@ const Filter = ({
           </option>
         </select>
         <div className="filter-favorite">
-          {filterByFavorite ? (
+          {filterOptions.filterByFavorite ? (
             <BsStarFill
-              onClick={() => setFilterByFavorite(!filterByFavorite)}
+              onClick={() =>
+                setFilterOptions((p) => ({
+                  ...p,
+                  filterByFavorite: !p.filterByFavorite,
+                }))
+              }
             />
           ) : (
-            <BsStar onClick={() => setFilterByFavorite(!filterByFavorite)} />
+            <BsStar
+              onClick={() =>
+                setFilterOptions((p) => ({
+                  ...p,
+                  filterByFavorite: !p.filterByFavorite,
+                }))
+              }
+            />
           )}
         </div>
       </div>
